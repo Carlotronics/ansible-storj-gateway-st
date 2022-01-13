@@ -1,0 +1,21 @@
+---
+
+# defaults/main.yml
+
+# Paths for gateway-st install
+storj_gateway_st_srv_path: "/srv"
+storj_gateway_st_path: "{{ storj_gateway_st_srv_path }}/storj-gateway-st"
+
+# Arch map
+storj_gateway_st_host_arch_map:
+  aarch64: 'arm64'
+  armv6l: 'arm'
+  armv7l: 'arm'
+  x86_64: 'amd64'
+
+# Host arch
+storj_gateway_st_host_arch: "{{ storj_gateway_st_host_arch_map[ansible_architecture] | default(ansible_architecture) }}"
+
+# gateway-st version
+# valid values: any version available as a release on github, without "v" prefix
+storj_gateway_st_version: "1.5.1"

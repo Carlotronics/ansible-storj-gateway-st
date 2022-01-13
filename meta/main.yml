@@ -1,0 +1,36 @@
+---
+
+# meta/main.yml
+
+dependencies: []
+
+galaxy_info:
+  role_name: storj-gateway-st
+  author: Charles Decoux <charles@phowork.fr>
+  description: StorJ S3 single-tenant gateway
+  company: Phowork
+  license: GPL-3.0-or-later
+  min_ansible_version: 2.9
+  platforms:
+    - name: Alpine
+      versions:
+        - all
+    - name: Archlinux
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: EL
+      versions:
+        - all
+    - name: Fedora
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+  galaxy_tags:
+    - storj
+    - s3
+    - gateway

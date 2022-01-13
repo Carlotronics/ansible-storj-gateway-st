@@ -1,0 +1,70 @@
+---
+
+# tasks/main.yml
+
+- name: load OS specific variables
+  include_vars: "{{ vars_file }}"
+  with_first_found:
+    - paths:
+        - "vars"
+      files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+        - "{{ ansible_system }}.yml"
+        - "defaults.yml"
+  loop_control:
+    loop_var: vars_file
+
+- name: Ensure srv dir is present
+  file:
+    path: "{{ storj_gateway_st_srv_path }}"
+    state: directory
+    owner: root
+    group: root
+  tags:
+    - skip_ansible_lint
+
+- name: Ensure needed dirs are present
+  file:
+    path: "{{ dir.path }}"
+    state: directory
+    owner: "{{ dir.owner | d('root') }}"
+    group: "{{ dir.group | d('root') }}"
+    mode: "{{ dir.mode | d('0600') }}"
+  loop:
+    - {path: "{{ storj_gateway_st_path }}", mode: "0755"}
+    - {path: "{{ storj_gateway_st_path }}/bin"}
+  loop_control:
+    loop_var: dir
+
+- name: Install packages and dependencies
+  package:
+    name:
+      - "{{ pkg_unzip_name }}"
+    state: present
+
+- name: Get gateway-st bin from Github releases
+  get_url:
+    url: "https://github.com/storj/gateway-st/releases/download/v{{ storj_gateway_st_version }}/gateway_linux_{{ storj_gateway_st_host_arch }}.zip"
+    dest: "{{ storj_gateway_st_path }}/bin/gateway_{{ storj_gateway_st_version }}_{{ storj_gateway_st_host_arch }}.zip"
+
+- name: Unarchive gateway-st release
+  unarchive:
+    src: "{{ storj_gateway_st_path }}/bin/gateway_{{ storj_gateway_st_version }}_{{ storj_gateway_st_host_arch }}.zip"
+    dest: "{{ storj_gateway_st_path }}/bin"
+    remote_src: yes
+
+- name: Rename gateway-st bin
+  command:
+    cmd: "mv {{ storj_gateway_st_path }}/bin/gateway {{ storj_gateway_st_path }}/bin/gateway_{{ storj_gateway_st_version }}_{{ storj_gateway_st_host_arch }}"
+    creates: "{{ storj_gateway_st_path }}/bin/gateway_{{ storj_gateway_st_version }}_{{ storj_gateway_st_host_arch }}"
+
+  # This is not really needed but I prefer to double-check permissions
+- name: Grant exec perm to gateway-st bin
+  file:
+    path: "{{ storj_gateway_st_path }}/bin/gateway_{{ storj_gateway_st_version }}_{{ storj_gateway_st_host_arch }}"
+    owner: root
+    group: root
+    mode: '0700'

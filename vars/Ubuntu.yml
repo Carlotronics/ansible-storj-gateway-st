@@ -1,0 +1,5 @@
+---
+
+# vars/Ubuntu.yml
+
+pkg_unzip_name: "unzip"

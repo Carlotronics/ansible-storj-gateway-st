@@ -1,0 +1,5 @@
+---
+
+# vars/defaults.yml
+
+pkg_unzip_name: "unzip"
