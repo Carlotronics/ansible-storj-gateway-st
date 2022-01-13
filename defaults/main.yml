@@ -19,3 +19,26 @@ storj_gateway_st_host_arch: "{{ storj_gateway_st_host_arch_map[ansible_architect
 # gateway-st version
 # valid values: any version available as a release on github, without "v" prefix
 storj_gateway_st_version: "1.5.1"
+
+storj_gateway_st_bin_argv:
+  - "--config-dir {{ storj_gateway_st_path }}/config"
+
+# StorJ Gateway ST configuration keys
+# storj_gateway_st_minio_access_key: ""
+# storj_gateway_st_minio_secret_key: ""
+# storj_gateway_st_access: ""
+storj_gateway_st_server_address: 127.0.0.1:7777
+storj_gateway_st_tracing_enabled: "true"
+storj_gateway_st_tracing_interval: 30s
+storj_gateway_st_tracing_sample: 0.1
+storj_gateway_st_website: "false"
+storj_gateway_st_log_level: info
+storj_gateway_st_log_output: "{{ storj_gateway_st_path }}/logs/gateway-st.log"
+storj_gateway_st_log_stack: "false"
+storj_gateway_st_additional_options: {}
+
+# storj_gateway_st_additional_options:
+#   - key: s3.disable-copy-object
+#     value: "true"
+#   - key: metrics.interval
+#     value: 1m0s

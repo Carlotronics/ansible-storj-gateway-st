@@ -35,7 +35,9 @@
     mode: "{{ dir.mode | d('0600') }}"
   loop:
     - {path: "{{ storj_gateway_st_path }}", mode: "0755"}
+    - {path: "{{ storj_gateway_st_path }}/config", mode: "0755"}
     - {path: "{{ storj_gateway_st_path }}/bin"}
+    - {path: "{{ storj_gateway_st_path }}/logs"}
   loop_control:
     loop_var: dir
 
@@ -54,6 +56,7 @@
   unarchive:
     src: "{{ storj_gateway_st_path }}/bin/gateway_{{ storj_gateway_st_version }}_{{ storj_gateway_st_host_arch }}.zip"
     dest: "{{ storj_gateway_st_path }}/bin"
+    creates: "{{ storj_gateway_st_path }}/bin/gateway_{{ storj_gateway_st_version }}_{{ storj_gateway_st_host_arch }}"
     remote_src: yes
 
 - name: Rename gateway-st bin
@@ -68,3 +71,29 @@
     owner: root
     group: root
     mode: '0700'
+
+- name: Copy gateway-st systemd service file
+  template:
+    src: "{{ item }}"
+    dest: "/{{ item }}"
+    owner: root
+    group: root
+    mode: "0664"
+  loop:
+    - "etc/systemd/system/storj-gateway-st.service"
+
+- name: Copy gateway-st configuration file
+  template:
+    src: storj-gateway-st-config.yaml
+    dest: "{{ storj_gateway_st_path }}/config/config.yaml"
+    owner: root
+    group: root
+    mode: "0664"
+
+- name: Configure gateway-st systemd service
+  systemd:
+    name: storj-gateway-st
+    enabled: yes
+    state: started
+
+# TODO: setup logrotation

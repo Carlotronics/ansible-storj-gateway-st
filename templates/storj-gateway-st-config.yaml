@@ -1,0 +1,21 @@
+---
+
+access: {{ storj_gateway_st_access }}
+minio.access-key: {{ storj_gateway_st_minio_access_key }}
+minio.secret-key: {{ storj_gateway_st_minio_secret_key }}
+
+server.address: {{ storj_gateway_st_server_address }}
+
+tracing.enabled: {{ storj_gateway_st_tracing_enabled }}
+tracing.interval: {{ storj_gateway_st_tracing_interval }}
+tracing.sample: {{ storj_gateway_st_tracing_sample }}
+website: {{ storj_gateway_st_website }}
+log.level: {{ storj_gateway_st_log_level }}
+log.output: {{ storj_gateway_st_log_output }}
+log.stack: {{ storj_gateway_st_log_stack }}
+
+{% if storj_gateway_st_additional_options is defined %}
+{% for option in storj_gateway_st_additional_options %}
+{{ option.key }}: {{ option.value }}
+{% endfor %}
+{% endif %}
